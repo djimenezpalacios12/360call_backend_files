@@ -21,7 +21,6 @@ from app.schemas.response import ResponseModel
 from app.services.audio_procesing import process_audio
 from app.services.company_services import get_user_empresa
 from app.services.mime_types import validate_mimetypes
-from app.services.ms_bitacora import send_action_bitacora
 from app.services.queries_services import get_id_files, remove_files, save_id_file
 from app.services.users_services import get_user_area
 
@@ -177,11 +176,6 @@ async def upload_files_assistant_services(
                     user_area_data.asistente, user_area_data.vectores, file_location
                 )
                 await az_upload_files_folders(id_empresa, user_id, file)
-
-        # Register action in Bitacora
-        send_action_bitacora(
-            token, f"Archivos cargados en el asistente, ID: {user_area_data.asistente}"
-        )
 
         # Response
         response = ResponseModel(

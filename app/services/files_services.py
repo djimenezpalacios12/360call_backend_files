@@ -17,7 +17,6 @@ from app.core.storage_azure.storage_azure import (
 from app.schemas.response import ResponseModel
 from app.services.company_services import get_user_empresa
 from app.services.mime_types import validate_mimetypes
-from app.services.ms_bitacora import send_action_bitacora
 
 # Setting/init logger
 if MyLogger.logger is None:
@@ -40,11 +39,6 @@ async def download_file_services(
         id_empresa = get_user_empresa(db, user_id)
 
         contenido = await az_download_file(id_empresa, body.file_name)
-
-        # Register action in Bitacora
-        send_action_bitacora(
-            token, f"Archivos cargados en el contenedor, ID: {id_empresa}"
-        )
 
         # Response
         response = ResponseModel(
@@ -85,12 +79,6 @@ async def load_files_folder_services(
         for file in files_success_cleaned:
             await az_upload_files_folders(id_empresa, user_id, file)
 
-        # Register action in Bitacora
-        send_action_bitacora(
-            token,
-            f"Archivos cargados en el contenedor, ID: {id_empresa} y carpeta ID: {user_id}",
-        )
-
         # Response
         response = ResponseModel(
             request_date=datetime.now(),
@@ -129,11 +117,6 @@ async def load_files_services(
         # Upload in AZ
         for file in files_success_cleaned:
             await az_upload_files(id_empresa, file)
-
-        # Register action in Bitacora
-        send_action_bitacora(
-            token, f"Archivos cargados en el contenedor, ID: {id_empresa}"
-        )
 
         # Response
         response = ResponseModel(
@@ -192,11 +175,6 @@ async def remove_files_services(files: List[str], request: Request, db: Session)
 
         for file in files:
             await az_remove_file(id_empresa, file)
-
-        # Register action in Bitacora
-        send_action_bitacora(
-            token, f"Archivos eliminados en el contenedor, ID: {id_empresa}"
-        )
 
         # Response
         response = ResponseModel(

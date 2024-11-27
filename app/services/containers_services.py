@@ -12,7 +12,6 @@ from app.core.storage_azure.storage_azure import (
     az_remove_container,
 )
 from app.schemas.response import ResponseModel
-from app.services.ms_bitacora import send_action_bitacora
 
 
 async def remove_container_services(
@@ -77,9 +76,6 @@ async def create_container_services(
         token = auth_header.split(" ")[1]
 
         container_created = await az_new_contanier(container)
-
-        # Register action in Bitacora
-        send_action_bitacora(token, f"{container_created}")
 
         # Response
         response = ResponseModel(
