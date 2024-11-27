@@ -139,15 +139,15 @@ async def upload_files_assistant_services(
             file_bytes = file.file.read()
             file_location = f"{UPLOAD_FOLDER}/{unique_filename}"
 
-            # TODO: Descoment when transcripciòn function is ready
-            # TODO: add audio transcription logic when resources are defined to occupy (Whisper or STT)
+            # file_location: uploads/sp_00-00-14_1.mp3
+
             # Convert mp3 to txt and save if content_type = 'audio/mpeg'
-            # if file.content_type == "audio/mpeg":
-            #     MyLogger.logger.info(f"Subiendo archivo de audio")
-            #     file_base64_audio = base64.b64encode(file_bytes).decode("utf-8")
-            #     await process_audio()
-            #  elif (
-            if (
+            if file.content_type == "audio/mpeg":
+                with open(file_location, "wb+") as file_object:
+                    file_object.write(file_bytes)
+                MyLogger.logger.info(f"Subiendo archivo de audio")
+                await process_audio(file_location)
+            elif (
                 file.content_type == "text/csv"
                 or file.content_type
                 == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
