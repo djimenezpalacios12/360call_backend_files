@@ -143,8 +143,8 @@ async def upload_files_assistant_services(
             if file.content_type == "audio/mpeg":
                 with open(file_location, "wb+") as file_object:
                     file_object.write(file_bytes)
-                MyLogger.logger.info(f"Subiendo archivo de audio")
                 await process_audio(file_location)
+                file_location = file_location + ".txt"
             elif (
                 file.content_type == "text/csv"
                 or file.content_type
@@ -170,13 +170,12 @@ async def upload_files_assistant_services(
                     file_object.write(file_bytes)
 
             # Save in AZ assis. y Storage.
+            MyLogger.logger.info(f"Subiendo archivo en {file_location}")
             await az_assis_upload_file(
                 user_area_data.asistente, user_area_data.vectores, file_location
             )
             await az_upload_files_folders(id_empresa, user_id, file)
 
-        os.remove(file_location)
-        os.remove(file_location + ".txt")
         # Response
         response = ResponseModel(
             request_date=datetime.now(),
