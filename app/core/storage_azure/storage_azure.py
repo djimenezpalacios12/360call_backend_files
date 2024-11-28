@@ -192,9 +192,10 @@ async def az_upload_files_folders(
 
         # Verificar si el contenedor existe
         if not container_client.exists():
-            raise HTTPException(
-                status_code=404, detail=f"El contenedor '{container_name}' no existe."
-            )
+            # raise HTTPException(
+            #     status_code=404, detail=f"El contenedor '{container_name}' no existe."
+            # )
+            await az_new_contanier(container_name)
 
         # Crear el nombre del blob incluyendo el nombre de la carpeta si se proporciona
         blob_name = (

@@ -139,8 +139,6 @@ async def upload_files_assistant_services(
             file_bytes = file.file.read()
             file_location = f"{UPLOAD_FOLDER}/{unique_filename}"
 
-            # file_location: uploads/sp_00-00-14_1.mp3
-
             # Convert mp3 to txt and save if content_type = 'audio/mpeg'
             if file.content_type == "audio/mpeg":
                 with open(file_location, "wb+") as file_object:
@@ -171,12 +169,14 @@ async def upload_files_assistant_services(
                 with open(file_location, "wb+") as file_object:
                     file_object.write(file_bytes)
 
-                # Save in AZ assis. y Storage.
-                await az_assis_upload_file(
-                    user_area_data.asistente, user_area_data.vectores, file_location
-                )
-                await az_upload_files_folders(id_empresa, user_id, file)
+            # Save in AZ assis. y Storage.
+            await az_assis_upload_file(
+                user_area_data.asistente, user_area_data.vectores, file_location
+            )
+            await az_upload_files_folders(id_empresa, user_id, file)
 
+        os.remove(file_location)
+        os.remove(file_location + ".txt")
         # Response
         response = ResponseModel(
             request_date=datetime.now(),
