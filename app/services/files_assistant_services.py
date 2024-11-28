@@ -135,27 +135,40 @@ async def upload_files_assistant_services(
 
         # load every file
         for file in files_success_cleaned:
+            content_audio = "audio/mpeg"
+            content_csv = "text/csv"
+            content_sheet = (
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
             unique_filename = file.filename
             file_bytes = file.file.read()
             file_location = f"{UPLOAD_FOLDER}/{unique_filename}"
 
-            # Convert mp3 to txt and save if content_type = 'audio/mpeg'
-            if file.content_type == "audio/mpeg":
+            # 1. Audio
+            if file.content_type == content_audio:
                 with open(file_location, "wb+") as file_object:
                     file_object.write(file_bytes)
                 await process_audio(file_location)
-                file_location = file_location + ".txt"
-            elif (
-                file.content_type == "text/csv"
-                or file.content_type
-                == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            ):
+
+                # Save in AZ assis. y Storage.
+                file_location_txt = file_location + ".txt"
+                MyLogger.logger.info(f"Subiendo archivo en {file_location}")
+                await az_assis_upload_file(
+                    user_area_data.asistente,
+                    user_area_data.vectores,
+                    file_location_txt,
+                )
+                await az_upload_files_folders(id_empresa, user_id, file)
+                os.remove(file_location)
+
+            # 2. Spreadsheet
+            elif file.content_type == content_csv or file.content_type == content_sheet:
                 # Save data from file in a Temp. file
                 with open(file_location, "wb+") as file_object:
                     file_object.write(file_bytes)
 
-                MyLogger.logger.info(f"Subiendo archivo xlsx/csv")
                 file_id = await az_assis_excel_upload(file_location)
+                MyLogger.logger.info(f"Subiendo archivo en {file_location}")
                 await az_upload_files_folders(id_empresa, user_id, file)
                 new_colection_prompt_object = IdArchivosOpenai(
                     id_archivo=file_id,
@@ -163,18 +176,19 @@ async def upload_files_assistant_services(
                     id_area=user_area_data.id_area,
                 )
                 await save_id_file(db, new_colection_prompt_object)
+
+            # 3. Other Docs
             else:
                 MyLogger.logger.info(f"Subiendo documento")
                 # Save data from file in a Temp. file
                 with open(file_location, "wb+") as file_object:
                     file_object.write(file_bytes)
-
-            # Save in AZ assis. y Storage.
-            MyLogger.logger.info(f"Subiendo archivo en {file_location}")
-            await az_assis_upload_file(
-                user_area_data.asistente, user_area_data.vectores, file_location
-            )
-            await az_upload_files_folders(id_empresa, user_id, file)
+                # Save in AZ assis. y Storage.
+                MyLogger.logger.info(f"Subiendo archivo en {file_location}")
+                await az_assis_upload_file(
+                    user_area_data.asistente, user_area_data.vectores, file_location
+                )
+                await az_upload_files_folders(id_empresa, user_id, file)
 
         # Response
         response = ResponseModel(
