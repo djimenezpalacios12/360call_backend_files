@@ -6,10 +6,12 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from app.core.loggers.MyLogger import MyLogger
-from app.core.storage_azure.storage_azure import (
+from app.core.storage_azure.containers_azure import (
     az_all_containers,
-    az_new_contanier,
     az_remove_container,
+)
+from app.core.storage_azure.storage_azure import (
+    az_new_contanier,
 )
 from app.schemas.response import ResponseModel
 
