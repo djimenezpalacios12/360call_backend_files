@@ -10,9 +10,9 @@ load_dotenv()
 if MyLogger.logger is None:
     MyLogger.configure()
 
-ACCOUNT_NAME_STORAGE = os.getenv("ACCOUNT_NAME_STORAGE")
-ACCOUNT_KEY = os.getenv("ACCOUNT_KEY")
-STRING_CONNECT = f"DefaultEndpointsProtocol=https;AccountName={ACCOUNT_NAME_STORAGE};AccountKey={ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+AZURE_ACCOUNT_NAME_STORAGE = os.getenv("AZURE_ACCOUNT_NAME_STORAGE")
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
+STRING_CONNECT = f"DefaultEndpointsProtocol=https;AccountName={AZURE_ACCOUNT_NAME_STORAGE};AccountKey={AZURE_ACCOUNT_KEY};EndpointSuffix=core.windows.net"
 
 
 # Remove specific container

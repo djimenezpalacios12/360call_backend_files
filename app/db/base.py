@@ -9,15 +9,15 @@ from sqlalchemy.orm import sessionmaker
 from app.core.loggers.MyLogger import MyLogger
 
 load_dotenv()
-DATABASE_HOST = os.getenv("DATABASE_HOST")
-DATABASE_PORT = os.getenv("DATABASE_PORT")
-DATABASE_USER = os.getenv("DATABASE_USER")
-DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
-DATABASE_DB = os.getenv("DATABASE_DB")
+POSTGRES_HOST = os.getenv("POSTGRES_HOST")
+POSTGRES_PORT = os.getenv("POSTGRES_PORT")
+POSTGRES_USER = os.getenv("POSTGRES_USER")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+POSTGRES_DATABASE = os.getenv("POSTGRES_DATABASE")
 # Handle strings in password
-DATABASE_PASSWORD_ESCAPED = quote_plus(DATABASE_PASSWORD)
+DATABASE_PASSWORD_ESCAPED = quote_plus(POSTGRES_PASSWORD)
 
-DATABASE_URL = f"postgresql://{DATABASE_USER}:{DATABASE_PASSWORD_ESCAPED}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_DB}"
+DATABASE_URL = f"postgresql://{POSTGRES_USER}:{DATABASE_PASSWORD_ESCAPED}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
 
 # Configura el motor de la base de datos
 engine = create_engine(DATABASE_URL)
@@ -44,7 +44,7 @@ def connect():
     try:
         with engine.connect() as conn:
             MyLogger.logger.info(
-                f"Successfully Connected to the database; {DATABASE_HOST}"
+                f"Successfully Connected to the database; {POSTGRES_HOST}"
             )
     except Exception as exc:
         MyLogger.logger.error(f" Sorry Could not connect to the database: {exc}")

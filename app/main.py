@@ -13,7 +13,7 @@ from app.api.v1.containers import containersRouter
 from app.api.v1.filesAssistant import filesAssistantRouter
 
 # Create FastAPI app instance
-app = FastAPI(title="Alaya Backend FastAPI", version="0.0.1", description="MS Archivos")
+app = FastAPI(title="Backend FastAPI", version="0.0.1", description="MS Archivos")
 
 # CORS middleware settings
 origins = ["*"]
